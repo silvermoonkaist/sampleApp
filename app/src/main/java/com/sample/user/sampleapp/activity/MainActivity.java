@@ -16,6 +16,7 @@ import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+import com.firebase.client.Firebase;
 import com.sample.user.sampleapp.R;
 import com.sample.user.sampleapp.fragments.OneFragment;
 import com.sample.user.sampleapp.fragments.ThreeFragment;
@@ -44,6 +45,8 @@ public class MainActivity extends AppCompatActivity {
 
         tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(viewPager);
+
+        Firebase.setAndroidContext(this);
     }
 
     private void setupViewPager(ViewPager viewPager) {

@@ -27,6 +27,7 @@ import com.firebase.client.ValueEventListener;
 
 import java.util.Random;
 import com.sample.user.sampleapp.R;
+import com.sample.user.sampleapp.chat.Chat;
 import com.sample.user.sampleapp.chat.ChatListAdapter;
 
 public class ThreeFragment extends Fragment{
@@ -38,6 +39,7 @@ public class ThreeFragment extends Fragment{
     private ValueEventListener mConnectedListener;
     private ChatListAdapter mChatListAdapter;
     private ListView listView;
+    private EditText inputText;
 
     public ThreeFragment() {
         // Required empty public constructor
@@ -51,20 +53,34 @@ public class ThreeFragment extends Fragment{
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_one, container, false);
-        listView =  (ListView) rootView.findViewById(R.id.listView);
+        ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_three, container, false);
+       // Firebase.setAndroidContext(getContext());
+        setupUsername();
 
+        mFirebaseRef = new Firebase(FIREBASE_URL).child("chat");
 
-        // Inflate the layout for this fragment
-        return rootView;
-    }
+        listView =  (ListView) rootView.findViewById(R.id.listViewTab3);
+        inputText = (EditText) rootView.findViewById(R.id.messageInput);
 
-    @Override
-    public void onStart() {
-        super.onStart();
-        // Setup our view and list adapter. Ensure it scrolls to the bottom as data changes
-        // Tell our list adapter that we only want 50 messages at a time
-        mChatListAdapter = new ChatListAdapter(mFirebaseRef.limit(50), this, R.layout.chat_message, mUsername);
+        // Setup our input methods. Enter key on the keyboard or pushing the send button
+        inputText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
+                if (actionId == EditorInfo.IME_NULL && keyEvent.getAction() == KeyEvent.ACTION_DOWN) {
+                    sendMessage();
+                }
+                return true;
+            }
+        });
+
+        rootView.findViewById(R.id.sendButton).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                sendMessage();
+            }
+        });
+
+        mChatListAdapter = new ChatListAdapter(mFirebaseRef.limit(50), getActivity(), R.layout.chat_message, mUsername);
         listView.setAdapter(mChatListAdapter);
         mChatListAdapter.registerDataSetObserver(new DataSetObserver() {
             @Override
@@ -91,6 +107,9 @@ public class ThreeFragment extends Fragment{
                 // No-op
             }
         });
+
+        // Inflate the layout for this fragment
+        return rootView;
     }
 
     @Override
@@ -101,7 +120,7 @@ public class ThreeFragment extends Fragment{
     }
 
     private void setupUsername() {
-        SharedPreferences prefs = getApplication().getSharedPreferences("ChatPrefs", 0);
+        SharedPreferences prefs = getActivity().getApplication().getSharedPreferences("ChatPrefs", 0);
         mUsername = prefs.getString("username", null);
         if (mUsername == null) {
             Random r = new Random();
@@ -112,7 +131,6 @@ public class ThreeFragment extends Fragment{
     }
 
     private void sendMessage() {
-        EditText inputText = (EditText) findViewById(R.id.messageInput);
         String input = inputText.getText().toString();
         if (!input.equals("")) {
             // Create our 'model', a Chat object
