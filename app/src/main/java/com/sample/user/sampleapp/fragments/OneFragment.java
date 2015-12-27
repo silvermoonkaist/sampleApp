@@ -1,6 +1,7 @@
 package com.sample.user.sampleapp.fragments;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.ListFragment;
@@ -12,8 +13,11 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+import com.sample.user.sampleapp.activity.ChatActivity;
 
 import com.sample.user.sampleapp.R;
+import com.sample.user.sampleapp.news.MySQLiteHelper;
+import com.sample.user.sampleapp.news.News;
 
 import java.util.ArrayList;
 
@@ -34,30 +38,15 @@ public class OneFragment extends Fragment {
         // Inflate the layout for this fragment
         ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_one, container, false);
 
-        ArrayList<String> arrlist = new ArrayList<String>();
-        arrlist.add("one");
-        arrlist.add("two");
-        arrlist.add("three");
-        arrlist.add("four");
-        arrlist.add("five");
+        MySQLiteHelper db = new MySQLiteHelper(getContext());
 
-        ArrayAdapter<String> mAdapter = new ArrayAdapter<String>(getActivity(),
-                android.R.layout.simple_list_item_1, arrlist);
-        ListView list = (ListView) rootView.findViewById(R.id.listView);
-        list.setAdapter(mAdapter);
-        list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                String toastMessage = ((TextView) view).getText().toString()
-                        + " is selected. position is " + position + ", and id is " + id;
-                Toast.makeText(
-                        getContext(),
-                        toastMessage,
-                        Toast.LENGTH_SHORT
-                ).show();
-            }
-        });
-        
+        /**
+         * CRUD Operations
+         * */
+        // add Books
+        db.addNews(new News("AAAAAAAAAAAAAAAAAAAAAAAAAAA", "xxxxxxxxxxxxxxxx"));
+        db.addNews(new News("BBBBBBBBBBBBBBBBBBBBBBBBBBB", "yyyyyyyyyyyyyyyy"));
+        db.addNews(new News("CCCCCCCCCCCCCCCCCCCCCCCCCCC", "zzzzzzzzzzzzzzzz"));
         return rootView;
     }
 
