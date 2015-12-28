@@ -1,5 +1,13 @@
 package com.sample.user.sampleapp.news;
 
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+
 /**
  * Created by user on 2015-12-27.
  */
@@ -11,9 +19,9 @@ public class News {
 
     public News(){}
 
-    public News(String url, String title) {
+    public News(String id, String url, String title) {
         super();
-        this.id = Sha1Hex.makeSHA1Hash(url);
+        this.id = id;
         this.url = url;
         this.title = title;
     }
@@ -22,7 +30,7 @@ public class News {
 
     @Override
     public String toString() {
-        return "News [id=" + id + ", url=" + url
+        return "MyNews [id=" + id + ", url=" + url
                 + ", title=" + title + "]";
     }
 
@@ -48,5 +56,19 @@ public class News {
 
     public void setTitle(String title){
         this.title = title;
+    }
+
+    public Bitmap loadImage(Context context)
+    {
+        Bitmap b = null;
+        try {
+            File f=new File(context.getFilesDir(), this.id);
+            b = BitmapFactory.decodeStream(new FileInputStream(f));
+        }
+        catch (FileNotFoundException e)
+        {
+            e.printStackTrace();
+        }
+        return b;
     }
 }

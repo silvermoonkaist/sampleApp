@@ -27,8 +27,6 @@ import java.util.Random;
  * Created by user on 2015-12-27.
  */
 public class ChatActivity extends AppCompatActivity {
-    private static final String FIREBASE_URL = "https://sampleappcs492.firebaseio.com/";
-
     private String mUsername;
     private Firebase mFirebaseRef;
     private ValueEventListener mConnectedListener;
@@ -56,19 +54,21 @@ public class ChatActivity extends AppCompatActivity {
         setTitle(chatName);
 
 
-        mFirebaseRef = new Firebase(FIREBASE_URL).child("chat").child(chatName);
+        mFirebaseRef = new Firebase(FirebaseInterface.FIREBASE_URL).child("chatdata").child(chatName);
 
         listView =  (ListView) findViewById(R.id.listViewChat);
         inputText = (EditText) findViewById(R.id.messageInput);
 
         // Setup our input methods. Enter key on the keyboard or pushing the send button
+
+        inputText.setImeOptions(EditorInfo.IME_ACTION_DONE);
         inputText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
-                if (actionId == EditorInfo.IME_NULL && keyEvent.getAction() == KeyEvent.ACTION_DOWN) {
+            public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
+                if (i == EditorInfo.IME_ACTION_DONE) {
                     sendMessage();
+                    return true;
                 }
-                return true;
+                return false;
             }
         });
 

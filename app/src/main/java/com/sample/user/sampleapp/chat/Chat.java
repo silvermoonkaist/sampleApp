@@ -5,7 +5,6 @@ package com.sample.user.sampleapp.chat;
  * @since 6/21/13
  */
 public class Chat {
-
     private String message;
     private String author;
 

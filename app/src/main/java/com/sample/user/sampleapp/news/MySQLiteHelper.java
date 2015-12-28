@@ -13,11 +13,11 @@ import android.util.Log;
 public class MySQLiteHelper extends SQLiteOpenHelper {
  
     // Database Version
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2;
     // Database Name
     private static final String DATABASE_NAME = "NewsDB";
 
-    // News table name
+    // MyNews table name
     private static final String TABLE_NEWS = "news_table";
  
     public MySQLiteHelper(Context context) {
@@ -29,9 +29,9 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
         // SQL statement to create news table
         String CREATE_NEW_TABLE =
                 "CREATE TABLE "+ TABLE_NEWS + " ( " +
-                "id TEXT, " +
-                "title TEXT, "+
-                "url TEXT )";
+                "id TEXT UNIQUE, " +
+                "url TEXT, "+
+                "title TEXT )";
  
         // create newss table
         db.execSQL(CREATE_NEW_TABLE);
@@ -57,7 +57,7 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
     private static final String KEY_TITLE = "title";
     private static final String KEY_URL = "url";
  
-    private static final String[] COLUMNS = {KEY_ID,KEY_TITLE,KEY_URL};
+    private static final String[] COLUMNS = {KEY_ID,KEY_URL,KEY_TITLE};
  
     public void addNews(News news){
         Log.d("addNews", news.toString());
@@ -67,9 +67,9 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
         // 2. create ContentValues to add key "column"/value
         ContentValues values = new ContentValues();
         String url = news.getURL();
-        values.put(KEY_ID, Sha1Hex.makeSHA1Hash(url)); // get title
-        values.put(KEY_TITLE, news.getTitle()); // get title
+        values.put(KEY_ID, news.getId()); // get title
         values.put(KEY_URL, news.getURL()); // get author
+        values.put(KEY_TITLE, news.getTitle()); // get title
 
         // 3. insert
         db.insert(TABLE_NEWS, // table
@@ -100,11 +100,17 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
         if (cursor != null)
             cursor.moveToFirst();
 
+        if (cursor.getCount() == 0) return null;
+
+        Log.d("getNews --> ", "Data: "
+                + cursor.getString(0) + " - "
+                + cursor.getString(1) + " - "
+                + cursor.getString(2) + " - ");
         // 4. build news object
         News news = new News();
         news.setId(cursor.getString(0));
-        news.setTitle(cursor.getString(1));
-        news.setURL(cursor.getString(2));
+        news.setURL(cursor.getString(1));
+        news.setTitle(cursor.getString(2));
 
         Log.d("getNews(" + id + ")", news.toString());
  

@@ -1,5 +1,7 @@
 package com.sample.user.sampleapp.fragments;
 
+import com.sample.user.sampleapp.activity.FirebaseInterface;
+import com.sample.user.sampleapp.chat.ChatRoomAdapter;
 import com.sample.user.sampleapp.news.Sha1Hex;
 
 import android.content.Intent;
@@ -39,6 +41,10 @@ import com.sample.user.sampleapp.chat.Chat;
 import com.sample.user.sampleapp.chat.ChatListAdapter;
 
 public class ThreeFragment extends Fragment{
+    private Firebase mFirebaseRef;
+    private ChatRoomAdapter mChatRoomAdapter;
+
+    ListView listView;
 
     public ThreeFragment() {
         // Required empty public constructor
@@ -54,6 +60,13 @@ public class ThreeFragment extends Fragment{
                              Bundle savedInstanceState) {
         ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_three, container, false);
 
+        Firebase.setAndroidContext(getContext());
+
+        mFirebaseRef = new Firebase(FirebaseInterface.FIREBASE_URL).child("chatrooms");
+        mChatRoomAdapter = new ChatRoomAdapter(mFirebaseRef.limit(50), getActivity(), R.layout.chat_room);
+
+
+        /*
         ArrayList<String> arrlist = new ArrayList<String>();
         arrlist.add("one");
         arrlist.add("two");
@@ -63,29 +76,26 @@ public class ThreeFragment extends Fragment{
 
         ArrayAdapter<String> mAdapter = new ArrayAdapter<String>(getActivity(),
                 android.R.layout.simple_list_item_1, arrlist);
-        ListView list = (ListView) rootView.findViewById(R.id.listView);
-        list.setAdapter(mAdapter);
-        list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        */
+
+        listView = (ListView) rootView.findViewById(R.id.listView);
+        listView.setAdapter(mChatRoomAdapter);
+        mChatRoomAdapter.registerDataSetObserver(new DataSetObserver() {
+            @Override
+            public void onChanged() {
+                super.onChanged();
+                listView.setSelection(mChatRoomAdapter.getCount() - 1);
+            }
+        });
+
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
-                String toastMessage = ((TextView) view).getText().toString()
-                        + " is selected. position is " + position + ", and id is " + id;
-
-                String msg = null;
-                msg = Sha1Hex.makeSHA1Hash(toastMessage);
-
-                Toast.makeText(
-                        getContext(),
-                        msg,
-                        Toast.LENGTH_SHORT
-                ).show();
-
-
                 //String name = ((TextView) view.findViewById(R.id.txtText)).getText();
-                String name = ((TextView) view).getText().toString();
+                String name = ((TextView) view.findViewById(R.id.title)).getText().toString();
                 Intent intent = new Intent(getContext(), ChatActivity.class);
-                intent.putExtra("name",name);
+                intent.putExtra("name", name);
                 startActivity(intent);
             }
         });
