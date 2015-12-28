@@ -25,10 +25,16 @@ public class ImageActivity extends AppCompatActivity {
     private static final int SWIPE_MIN_DISTANCE = 30;
     private static final int SWIPE_THRESHOLD_VELOCITY = 30;
     private GestureDetector mGestureDetector;
+    private static Toast mToast;
+    private ImageAdapter imageAdapter;
+
 
     int position = 0;
     @Override
     public void onCreate(Bundle savedInstanceState) {
+
+        mToast = Toast.makeText(this, "null", Toast.LENGTH_SHORT);
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.view_pager);
 
@@ -48,7 +54,7 @@ public class ImageActivity extends AppCompatActivity {
                 bitmaps.add(b);
         }
 
-        ImageAdapter imageAdapter = new ImageAdapter(this, bitmaps);
+        imageAdapter = new ImageAdapter(this, bitmaps);
         List<ImageView> images = new ArrayList<ImageView>();
 
         // Retrieve all the images
@@ -64,8 +70,30 @@ public class ImageActivity extends AppCompatActivity {
         ViewPager viewpager = (ViewPager) findViewById(R.id.pager);
         viewpager.setAdapter(pageradapter);
         // Show images following the position
+
+        mToast.setText("" + (position + 1) + "/" + imageAdapter.getCount());
+        mToast.show();
         viewpager.setCurrentItem(position);
-        Toast.makeText(this, "" + (position + 1) + "/" + imageAdapter.getCount(), Toast.LENGTH_SHORT).show();
+
+        viewpager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                // Toast.makeText(getApplicationContext(), "" + (position + 1) + "/" + imageAdapter.getCount(), Toast.LENGTH_SHORT).show();
+                mToast.setText("" + (position + 1) + "/" + imageAdapter.getCount());
+                mToast.show();
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+
+            }
+        });
 
     }
 

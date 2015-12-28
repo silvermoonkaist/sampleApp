@@ -121,7 +121,7 @@ public class URLActivity extends AppCompatActivity {
         String input = URL;
         if (!input.equals("")) {
             // Create our 'model', a Chat object
-            ChatRoom chatroom = new ChatRoom(newsTitle, mUsername);
+            ChatRoom chatroom = new ChatRoom(Hashed, newsTitle, mUsername);
             // Create a new, auto-generated child of that chat location, and save our chat data there
             Date d = new Date();
             mFirebaseRef.child(Hashed).setValue(chatroom);

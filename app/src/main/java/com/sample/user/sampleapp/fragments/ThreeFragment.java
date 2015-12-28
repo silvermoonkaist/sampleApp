@@ -94,8 +94,11 @@ public class ThreeFragment extends Fragment{
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 //String name = ((TextView) view.findViewById(R.id.txtText)).getText();
                 String name = ((TextView) view.findViewById(R.id.title)).getText().toString();
+                String uid = ((TextView) view.findViewById(R.id.uid)).getText().toString();
                 Intent intent = new Intent(getContext(), ChatActivity.class);
                 intent.putExtra("name", name);
+                intent.putExtra("uid", uid);
+
                 startActivity(intent);
             }
         });

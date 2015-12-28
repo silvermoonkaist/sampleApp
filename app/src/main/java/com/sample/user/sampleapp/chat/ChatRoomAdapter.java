@@ -32,8 +32,11 @@ public class ChatRoomAdapter extends FirebaseListAdapter<ChatRoom> {
     @Override
     protected void populateView(View view, ChatRoom room) {
         // Map a Chat object to an entry in our listview
-        String name = room.getName();
         TextView titleText = (TextView) view.findViewById(R.id.title);
-        titleText.setText(name);
+        titleText.setText(room.getName());
+        TextView dateText = (TextView) view.findViewById(R.id.date);
+        dateText.setText(room.getDate());
+        TextView idText = (TextView) view.findViewById(R.id.uid);
+        idText.setText(room.getId());
     }
 }

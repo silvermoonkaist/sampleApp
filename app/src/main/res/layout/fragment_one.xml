@@ -17,7 +17,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:hint="Google News Search"
-            android:text="KAIST"
+            android:text="Love"
             android:id="@+id/editText1"
             android:ems="18"
             android:singleLine="true"

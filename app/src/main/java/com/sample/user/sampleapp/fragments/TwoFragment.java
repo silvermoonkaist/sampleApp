@@ -8,6 +8,7 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,8 +29,14 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Handler;
+import java.util.logging.LogRecord;
 
 public class TwoFragment extends Fragment{
+    MySQLiteHelper db;
+    List<News> list;
+    ArrayList<Bitmap> bitmaps;
+    ImageAdapter imgAdapter;
 
     public TwoFragment() {
         // Required empty public constructor
@@ -44,21 +51,44 @@ public class TwoFragment extends Fragment{
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_two, container, false);
+        db = new MySQLiteHelper(getContext());
 
-        MySQLiteHelper db = new MySQLiteHelper(getContext());
-        List<News> list = db.getAllNews();
 
-        GridView gridview = (GridView) rootView.findViewById(R.id.gridView);
+        final SwipeRefreshLayout swipeView = (SwipeRefreshLayout) rootView.findViewById(R.id.swiperefresh);
 
-        ArrayList<Bitmap> bitmaps = new ArrayList<Bitmap>();
+        swipeView.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener(){
+            public void onRefresh(){
+                swipeView.setRefreshing(true);
+                bitmaps.clear();
+                list.clear();
+                list = db.getAllNews();
+                for(News n : list){
+                    Bitmap b = n.loadImage(getContext());
+                    if(b != null)
+                        bitmaps.add(b);
+                }
+                imgAdapter.notifyDataSetChanged();
+                swipeView.setRefreshing(false);
+            }
+        });
 
+
+        list = db.getAllNews();
+        bitmaps = new ArrayList<Bitmap>();
         for(News n : list){
             Bitmap b = n.loadImage(getContext());
             if(b != null)
                 bitmaps.add(b);
         }
 
-        ImageAdapter imgAdapter = new ImageAdapter(getContext(), bitmaps);
+
+
+
+
+        GridView gridview = (GridView) rootView.findViewById(R.id.gridView);
+
+        imgAdapter = new ImageAdapter(getContext(), bitmaps);
+        imgAdapter.notifyDataSetChanged();
         gridview.setAdapter(imgAdapter);
 
         // Listening to GridView item click

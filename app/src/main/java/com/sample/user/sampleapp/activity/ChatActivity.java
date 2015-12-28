@@ -34,6 +34,7 @@ public class ChatActivity extends AppCompatActivity {
     private ListView listView;
     private EditText inputText;
     private String chatName;
+    private String chatId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,13 +49,12 @@ public class ChatActivity extends AppCompatActivity {
         setupUsername();
 
         chatName = bundle.getString("name");
-        if (chatName == null){
-            System.exit(0);
-        }
         setTitle(chatName);
+        chatId = bundle.getString("uid");
 
 
-        mFirebaseRef = new Firebase(FirebaseInterface.FIREBASE_URL).child("chatdata").child(chatName);
+
+        mFirebaseRef = new Firebase(FirebaseInterface.FIREBASE_URL).child("chatdata").child(chatId  );
 
         listView =  (ListView) findViewById(R.id.listViewChat);
         inputText = (EditText) findViewById(R.id.messageInput);

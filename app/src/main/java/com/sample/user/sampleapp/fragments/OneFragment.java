@@ -35,10 +35,14 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
+//import org.apache.commons.lang3.StringEscapeUtils;
+
 import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 
 public class OneFragment extends Fragment {
@@ -57,6 +61,17 @@ public class OneFragment extends Fragment {
         myNews_list = new ArrayList<MyNews>();
         task = new ArrayList<NetworkTask>();
 
+    }
+
+    //@Override
+    public void onStop() {
+        super.onStop();
+        if (task != null) {
+            for (int j = 0; j < task.size(); ++j) {
+                if (task.get(j).getStatus().equals(AsyncTask.Status.RUNNING))
+                    task.get(j).cancel(true);
+            }
+        }
     }
 
     @Override
@@ -248,7 +263,7 @@ public class OneFragment extends Fragment {
                 URL url = null;
                 try {
                     url = new URL("https://ajax.googleapis.com/ajax/services/search/news?" +
-                            "v=1.0&q=" + input + "&userip=INSERT-USER-IP" + "&start=" + String.valueOf(num));//barack%20obama
+                            "v=1.0&q=" + text2html(input) + "&userip=INSERT-USER-IP" + "&start=" + String.valueOf(num));//barack%20obama
                 } catch (MalformedURLException e) {
                     e.printStackTrace();
                 }
@@ -310,12 +325,17 @@ public class OneFragment extends Fragment {
             m_adapter.notifyDataSetChanged() ;
             super.onPostExecute(result);
         }
-
-
-
     }
 
     public static String html2text(String html) {
         return Jsoup.parse(html).text();
+    }
+    public static String text2html(String text) {
+        try {
+            return URLEncoder.encode(text, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }
