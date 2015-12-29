@@ -197,6 +197,14 @@ public class OneFragment extends Fragment {
                     bt.setText(p.getPublish());
                 }
             }
+
+            if(position%2 == 0){
+                v.setBackgroundColor(0x20111155);
+            }
+            else{
+                v.setBackgroundColor(0x00FFFFFF);
+            }
+
             return v;
         }
     }

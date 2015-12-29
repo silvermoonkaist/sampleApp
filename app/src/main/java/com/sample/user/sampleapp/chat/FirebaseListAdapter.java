@@ -168,6 +168,12 @@ public abstract class FirebaseListAdapter<T> extends BaseAdapter {
         if (view == null) {
             view = mInflater.inflate(mLayout, viewGroup, false);
         }
+        if(i%2 == 0){
+            view.setBackgroundColor(0x20111155);
+        }
+        else{
+            view.setBackgroundColor(0x00FFFFFF);
+        }
 
         T model = mModels.get(i);
         // Call out to subclass to marshall this model into the provided view
